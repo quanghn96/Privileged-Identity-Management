@@ -1,0 +1,91 @@
+{% extends "sshkm/base.html" %}
+
+{% block title %}Permissions{% endblock %}
+
+{% block content %}
+{% if permissions %}
+        <form role="form" method="post" action="{% url 'PermissionDelete' %}" name="deleteMultiplePermissions">
+          {% csrf_token %}
+          <table class="DataTable display">
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="checkAll"></th>
+                <th>Host</th>
+                <th>Group</th>
+                <th>OS-User</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for permission in permissions %}
+              <tr>
+                <td><input type="checkbox" name="id_multiple" id="{{ permission.id }}" value="{{ permission.id }}"></td>
+                <td>{{ permission.host.name }}</td>
+                <td>{{ permission.group.name }}</td>
+                <td>{{ permission.osuser.name }}</td>
+                <td align="right">
+                  <a href="#" onclick="
+                    BootstrapDialog.confirm(
+                      {
+                        title: 'please confirm',
+                        message: 'Are you shure you want to delete the permission {{ permission.host.name }} -> {{ permission.group.name }} -> {{ permission.osuser.name }}',
+                        btnOKClass: 'btn-default',
+                        callback: function(result) {
+                          if(result) {
+                            window.location.href = '{% url 'PermissionDelete' %}?id={{ permission.id }}';
+                          }
+                        }
+                      }
+                    );
+                  "><span class="glyphicon glyphicon-trash" aria-hidden="true" title="delete"></span></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </form>
+{% else %}
+        <p>No Permissions are available.</p>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+              <li><a href="{% url 'PermissionCreate' %}">New Permission</a></li>
+{% if permissions %}
+              <li><a href="#" onclick="
+                checkboxCheck(
+                  function(){
+                    document.deleteMultiplePermissions.submit();
+                  },
+                  'id_multiple',
+                  'please confirm',
+                  'Are you shure you want to delete selected permission(s)',
+                  'no permission(s) selected',
+                  'Please select at least one permission'
+                )
+              ">Delete</a></li>
+
+{% comment %}
+            </ul>
+            <ul class="pagination pagination-nav pull-right">
+              <li><a href="#" class="paginate_left">&laquo;</a></li>
+              <li><span class="tableInfo" id="tableInfo"></span></li>
+              <li><a href="#" class="paginate_right">&raquo;</a></li>
+{% endcomment %}
+          {% if permissions.has_other_pages %}
+            </ul>
+            <ul class="pagination pagination-nav pull-right">
+              {% if permissions.has_previous %}
+              <li><a href="?page={{ permissions.previous_page_number }}" class="paginate_left">&laquo;</a></li>
+              {% else %}
+              <li class="disabled"><span>&laquo;</span></li>
+              {% endif %}
+              <li class="active"><span>{{ permissions.number }} of {{ permissions.paginator.num_pages }}</span></li>
+              {% if permissions.has_next %}
+              <li><a href="?page={{ permissions.next_page_number }}" class="paginate_right">&raquo;</a></li>
+              {% else %}
+              <li class="disabled"><span>&raquo;</span></li>
+              {% endif %}
+          {% endif %}
+{% endif %}
+{% endblock %}

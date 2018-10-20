@@ -1,0 +1,272 @@
+/* global */
+html {
+  height: 100%;
+}
+
+body {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+a, a.hover, a.focus, a:hover, a:focus {
+  color: black;
+}
+
+
+/* version info */
+.version {
+  color: grey;
+  margin-top: 3px;
+}
+
+
+/* login form */
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+
+/* changes for modal dialogs */
+.modal-dialog .modal-content .modal-header {
+  background-color: #333333;
+}
+
+
+/* form modifications */
+.btn-default,
+.pagination > li > a,
+.pagination > li > span,
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  background-color: #222222;
+  color: #9d9d9d;
+  border-color: #222222;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus
+.pagination > .disabled > span,
+.pagination > .disabled > span:hover,
+.pagination > .disabled > span:focus,
+.pagination > .disabled > a,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a:focus {
+  color: #9d9d9d;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.pagination-nav > li > a,
+.pagination-nav > li > span,
+.pagination-nav > .active > a,
+.pagination-nav > .active > span,
+.pagination-nav > .active > a:hover,
+.pagination-nav > .active > span:hover,
+.pagination-nav > .active > a:focus,
+.pagination-nav > .active > span:focus {
+  background-color: #222222;
+  color: #9d9d9d;
+  border-color: #adadad;
+  margin-top: -13px;
+  margin-bottom: -17px;
+}
+
+.pagination-nav > li > a:hover,
+.pagination-nav > li > span:hover,
+.pagination-nav > li > a:focus,
+.pagination-nav > li > span:focus
+.pagination-nav > .disabled > span,
+.pagination-nav > .disabled > span:hover,
+.pagination-nav > .disabled > span:focus,
+.pagination-nav > .disabled > a,
+.pagination-nav > .disabled > a:hover,
+.pagination-nav > .disabled > a:focus {
+  color: #9d9d9d;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+  margin-top: -13px;
+  margin-bottom: -17px;
+}
+
+.form-control:focus {
+  border-color: #000000;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(142, 142, 142, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(142, 142, 142, .6);
+}
+
+select[multiple] option:checked {
+  background: #222222 linear-gradient(0deg, #222222 0%, #222222 100%);
+}
+
+
+/* two-select box */
+.two-select {
+  display:inline;
+  margin-left: 5px;
+}
+
+.two-select-left {
+  float: left;
+}
+
+.two-select-right {
+  float: right;
+}
+
+.two-select-buttons {
+  padding-left: 10px;
+  padding-right: 10px;
+  display: table-cell;
+}
+
+
+/* dataTables */
+.dataTables_filter {
+  display: none;
+  /*float: left !important;
+  color: green;*/
+}
+
+table.dataTable thead .sorting, 
+table.dataTable thead .sorting_asc, 
+table.dataTable thead .sorting_desc {
+  background : none;
+}
+
+.searchbox {
+  max-width: 330px;
+}
+
+
+/* deploy stati */
+.glyphicon-ok {
+  color: #0df822;
+  /*CSS transitions*/
+  -o-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -ms-transition-property: none !important;
+  -webkit-transition-property: none !important;
+  transition-property: none !important;
+  /*CSS transforms*/
+  -o-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  /*CSS animations*/
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  -ms-animation: none !important;
+  animation: none !important;
+}
+
+.glyphicon-remove {
+  color: #ff0000;
+  /*CSS transitions*/
+  -o-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -ms-transition-property: none !important;
+  -webkit-transition-property: none !important;
+  transition-property: none !important;
+  /*CSS transforms*/
+  -o-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  /*CSS animations*/
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  -ms-animation: none !important;
+  animation: none !important;
+}
+
+.glyphicon-option-horizontal {
+  /*CSS transitions*/
+  -o-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -ms-transition-property: none !important;
+  -webkit-transition-property: none !important;
+  transition-property: none !important;
+  /*CSS transforms*/
+  -o-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  /*CSS animations*/
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  -ms-animation: none !important;
+  animation: none !important;
+}
+
+.glyphicon-refresh {
+  color: #00ebff;
+  -webkit-animation: spin 2s infinite linear;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -ms-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+}
+
+
+/* adapt svg images */
+svg {
+  fill: currentColor;
+}
+
+
+/* nav-none-collapse */
+.nav-none-collapse {
+  margin-right: 15px;
+  padding-top: 7px;
+}
+
+.nav-none-collapse > li > a {
+  padding: 16px 5px;
+  font-size: 15px;
+  line-height: 20px;
+}
+

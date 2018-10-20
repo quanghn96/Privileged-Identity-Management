@@ -1,0 +1,124 @@
+{% extends "sshkm/base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+        <hr>
+        <div class="btn btn-default" onclick="
+          BootstrapDialog.confirm(
+            {
+              title: 'Change Password',
+              message: $('<form action={% url 'PasswordSave' %} method=post name=changePassword class=form><input type=hidden name=csrfmiddlewaretoken value={{ csrf_token }}>Password: <input class=form-control type=password name=password>Confirm: <input class=form-control type=password name=confirm></form>'),
+              btnOKClass: 'btn-default',
+              callback: function(result) {
+                if(result) {
+                  document.changePassword.submit();
+                }
+              }
+            }
+          );
+        ">Change Your Password</div>
+
+        <hr>
+
+        <div class="btn btn-default" onclick="
+          BootstrapDialog.confirm(
+            {
+              title: 'Upload Master SSH-public-key',
+              message: $('<form action={% url 'MasterKeyPublic' %} method=post name=masterKeyPublic class=form enctype=multipart/form-data><input type=hidden name=csrfmiddlewaretoken value={{ csrf_token }}><input type=file name=publickey></form>'),
+              btnOKClass: 'btn-default',
+              callback: function(result) {
+                if(result) {
+                  document.masterKeyPublic.submit();
+                }
+              }
+            }
+          );
+        ">Upload Master SSH-public-key</div>
+        <br>
+        <br>
+        <div class="form-group">
+          <label for="publickey">This is the public key you should copy to the authorized_keys file of the superuser (default: root) on your target hosts:</label>
+          <textarea class="form-control" id="publickey" rows="5" readonly>{{ publickey }}</textarea>
+        <div>
+
+        <hr>
+        <div class="btn btn-default" onclick="
+          BootstrapDialog.confirm(
+            {
+              title: 'Upload Master SSH-private-key',
+              message: $('<form action={% url 'MasterKeyPrivate' %} method=post name=masterKeyPrivate class=form enctype=multipart/form-data><input type=hidden name=csrfmiddlewaretoken value={{ csrf_token }}><input type=file name=privatekey><br><input type=password name=passphrase placeholder=\'Passphrase if it is set\' class=form-control></form>'),
+              btnOKClass: 'btn-default',
+              callback: function(result) {
+                if(result) {
+                  document.masterKeyPrivate.submit();
+                }
+              }
+            }
+          );
+        ">Upload Master SSH-private-key</div>
+        <br><br>
+        <div class="form-group">
+          <label for="privatekey">This are the first and last few characters of the private key:</label>
+          <textarea class="form-control" id="privatekey" rows="5" readonly>{{ privatekey }}</textarea>
+        </div>
+
+        <hr>
+        <form action="{% url 'Superuser' %}" method="post" class="form">
+          {% csrf_token %}
+          <div class="form-group"><label class="control-label" for="id_superuser">Global Superuser (OS-User used to connect to your hosts to deploy all other keys)</label><input class="form-control" id="id_superuser" maxlength="200" name="superuser" placeholder="default: root" title="" type="text" value="{{ superuser }}" /></div>
+          <div class="form-group">
+          <button type="submit" class="btn btn-default">Submit</button>
+          </div>
+        </form>
+
+        <hr>
+        <div class="btn btn-default" onclick="
+          BootstrapDialog.confirm(
+            {
+              title: 'Create User',
+              message: $('<form action={% url 'CreateUser' %} method=post name=createUser class=form><input type=hidden name=csrfmiddlewaretoken value={{ csrf_token }}>Username: <input class=form-control type=text name=username>Password: <input class=form-control type=password name=password>Confirm: <input class=form-control type=password name=confirm>Admin: <input type=checkbox name=is_staff></form>'),
+              btnOKClass: 'btn-default',
+              callback: function(result) {
+                if(result) {
+                  document.createUser.submit();
+                }
+              }
+            }
+          );
+        ">Create Local User</div>
+
+        {% if users %}
+        <br><br>
+        <form role="form" method="post" action="{% url 'DeleteUser' %}" name="deleteMultipleUsers">
+          {% csrf_token %}
+          <div class="panel panel-default">
+            <table class="table table-striped table-hover">
+              <tr>
+                <th><input type="checkbox" class="checkAll"></th>
+                <th>Username</th>
+              </tr>
+              {% for user in users %}
+              <tr>
+                <td><input type="checkbox" name="id_multiple" id="{{ user.id }}" value="{{ user.id }}"></td>
+                <td>{{ user.username }}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+          <div class="btn btn-default" onclick="
+            checkboxCheck(
+              function(){
+                document.deleteMultipleUsers.submit();
+              },
+              'id_multiple',
+              'please confirm',
+              'Are you shure you want to delete selected user(s)',
+              'no user(s) selected',
+              'Please select at least one user'
+            )
+          ">Delete</div>
+        </form>
+{% endif %}
+        <hr>
+{% endblock %}

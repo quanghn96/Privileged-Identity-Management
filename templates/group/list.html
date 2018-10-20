@@ -1,0 +1,67 @@
+{% extends "sshkm/base.html" %}
+
+{% block title %}Groups{% endblock %}
+
+{% block content %}
+{% if groups %}
+        <br>
+        <input type="text" id="searchbox" class="form-control searchbox" placeholder="filter ...">
+        <br>
+        <form role="form" method="post" action="{% url 'GroupDelete' %}" name="deleteMultipleGroups">
+          {% csrf_token %}
+          <table class="DataTable display">
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="checkAll"></th>
+                <th>Name</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            </tbody>
+              {% for group in groups %}
+              <tr>
+                <td><input type="checkbox" name="id_multiple" id="{{ group.id }}" value="{{ group.id }}"></td>
+                <td><a href="{% url 'GroupDetail' %}?id={{ group.id }}">{{ group.name }}</a></td>
+                <td align="right">
+                  <a href="#" onclick="
+                    BootstrapDialog.confirm(
+                      {
+                        title: 'please confirm', 
+                        message: 'Are you shure you want to delete the group {{ group.name }}',
+                        btnOKClass: 'btn-default',
+                        callback: function(result) {
+                          if(result) {
+                            window.location.href = '{% url 'GroupDelete' %}?id={{ group.id }}';
+                          }
+                        }
+                      }
+                    );
+                  "><span class="glyphicon glyphicon-trash" aria-hidden="true" title="delete"></span></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </form>
+{% else %}
+        <p>No Groups are available.</p>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+              <li><a href="{% url 'GroupDetail' %}">New Group</a></li>
+{% if groups %}
+              <li><a href="#" onclick="
+                checkboxCheck(
+                  function(){
+                    document.deleteMultipleGroups.submit();
+                  },
+                  'id_multiple',
+                  'please confirm',
+                  'Are you shure you want to delete selected group(s)',
+                  'no group(s) selected',
+                  'Please select at least one group'
+                )
+              ">Delete</a></li>
+{% endif %}
+{% endblock %}

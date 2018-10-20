@@ -1,0 +1,13 @@
+{% extends "sshkm/base.html" %}
+
+{% block content %}
+        <form class="form-signin" action="{% url 'login' %}" method="post">
+          {% csrf_token %}
+          <label for="inputEmail" class="sr-only">Username</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+          <label for="inputPassword" class="sr-only">Password</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+          <button class="btn btn-lg btn-default btn-block" type="submit">Sign in</button>
+          <div class="small version">Version: {{ sshkm_version }}</div>
+        </form>
+{% endblock %}

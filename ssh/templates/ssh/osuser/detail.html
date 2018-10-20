@@ -1,0 +1,38 @@
+{% extends "sshkm/base.html" %}
+
+{% block title %}Save OS-User{% endblock %}
+
+{% block content %}
+{% load bootstrap3 %}
+        <form action="{% url 'OsuserSave' %}" method="post" class="form" name="save">
+          {% csrf_token %}
+          {% bootstrap_field osuserform.name %}
+          {% bootstrap_field osuserform.home set_required=False %}
+          {% bootstrap_field osuserform.description set_required=False %}
+          {% if request.GET.id %}
+          <input type="hidden" name="id" value="{{ request.GET.id }}">
+          {% endif %}
+        </form>
+{% if permissions %}
+       <br>
+       <h4>Permissions for this OS-User</h4>
+       <div class="panel panel-default">
+         <table class="table table-striped table-hover">
+            <tr>
+              <th>Host</th>
+              <th>Group</th>
+            </tr>
+            {% for permission in permissions %}
+            <tr>
+              <td>{{ permission.host.name }}</td>
+              <td>{{ permission.group.name }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+              <li><a href="#" onclick="document.save.submit();">Submit</a></li>
+{% endblock %}

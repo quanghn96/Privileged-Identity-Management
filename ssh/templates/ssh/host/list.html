@@ -1,0 +1,111 @@
+{% extends "sshkm/base.html" %}
+
+{% block title %}Hosts{% endblock %}
+
+{% block content %}
+{% if hosts %}
+        <br>
+        <input type="text" id="searchbox" class="form-control searchbox" placeholder="filter ...">
+        <br>
+        <form role="form" method="post" action="{% url 'HostDelete' %}" name="MultipleHosts">
+          {% csrf_token %}
+          <table class="DataTable display">
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="checkAll"></th>
+                <th>Name</th>
+                <th>Last Deploy Status</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for host in hosts %}
+              <tr>
+                <td><input type="checkbox" name="id_multiple" id="{{ host.id }}" value="{{ host.id }}"></td>
+                <td><a href="{% url 'HostDetail' %}?id={{ host.id }}">{{ host.name }}</a></td>
+                <td>
+                  {% if host.status == "SUCCESS" %}
+                  <span class="glyphicon glyphicon-ok" aria-hidden="true" title="{{host.status}} {{host.last_status}}" id="host{{ host.id }}"></span>
+                  {% elif host.status == "FAILURE" %}
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true" title="{{host.status}} {{host.last_status}}" id="host{{ host.id }}"></span>
+                  {% elif host.status == "PENDING" %}
+                  <span class="glyphicon glyphicon-refresh monitor_state" aria-hidden="true" title="{{host.status}} {{host.last_status}}" id="host{{ host.id }}"></span>
+                  {% elif host.status == "NOTHING TO DEPLOY" %}
+                  <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true" title="{{host.status}} {{host.last_status}}" id="host{{ host.id }}"></span>
+                  {% else %}
+                  <span class="monitor_state" id="host{{ host.id }}">&nbsp;</span>
+                  {% endif %}
+                </td>
+                <td align="right">
+                  <a href="#" onclick="
+                    BootstrapDialog.confirm(
+                      {
+                        title: 'please confirm',
+                        message: 'Are you shure you want to delete the host {{ host.name }}',
+                        btnOKClass: 'btn-default',
+                        callback: function(result) {
+                          if(result) {
+                            window.location.href = '{% url 'HostDelete' %}?id={{ host.id }}';
+                          }
+                        }
+                      }
+                    );
+                  "><span class="glyphicon glyphicon-trash" aria-hidden="true" title="delete"></span></a>
+                </td>
+                <td align="right">
+                  <a href="#" onclick="
+                    BootstrapDialog.confirm(
+                      {
+                        title: 'please confirm',
+                        message: 'Are you shure you want to deploy the host {{ host.name }}',
+                        btnOKClass: 'btn-default',
+                        callback: function(result) {
+                          if(result) {
+                            window.location.href = '{% url 'HostDeploy' %}?id={{ host.id }}';
+                          }
+                        }
+                      }
+                    );
+                  "><span class="glyphicon glyphicon-floppy-save" aria-hidden="true" title="deploy"></span></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </form>
+{% else %}
+        <p>No Hosts are available.</p>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+              <li><a href="{% url 'HostDetail' %}">New Host</a></li>
+{% if hosts %}
+              <li><a href="#" onclick="
+                checkboxCheck(
+                  function(){
+                    document.MultipleHosts.submit();
+                  },
+                  'id_multiple',
+                  'please confirm',
+                  'Are you shure you want to delete selected host(s)',
+                  'no host(s) selected',
+                  'Please select at least one host'
+                )
+              ">Delete</a></li>
+              <li><a href="#" onclick="
+            checkboxCheck(
+              function(){
+                document.MultipleHosts.action = '{% url 'HostDeploy' %}';
+                document.MultipleHosts.submit();
+              },
+              'id_multiple',
+              'please confirm',
+              'Are you shure you want to deploy selected host(s)',
+              'no host(s) selected',
+              'Please select at least one host'
+            )
+          ">Deploy</a></li>
+{% endif %}
+{% endblock %}
