@@ -9,7 +9,7 @@ Assign them to groups<br>
 Create hosts<br>
 Create os-users (root, tom, oracle, postgres, ...)<br>
 Define permissions which groups of ssh-keys is allowed to connect to which os-users on which hosts<br>
-{% if obj.sshconnection.count > 0 %}
+{% if obj.sshconnection.count > 0 and obj.permission %}
 	{% for i in obj.sshconnection.all %}
 		Ip: {{i.ip}} | Port: {{i.port}} | <a href="{% url 'ssh:detail' i.id %}">Connect</a><br>
 	{% endfor %}
