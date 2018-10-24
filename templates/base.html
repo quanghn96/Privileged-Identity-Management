@@ -16,13 +16,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "bootstrap-dialog/bootstrap-dialog.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "custom.css" %}" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+
   </head>
 
   <body>
@@ -30,12 +24,40 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          
-          <a class="navbar-brand" href="{% url 'ssh:index' %}"><img src="{% static "favicon.png" %}" width="20" height="20"></a>
-          
+          {% if user.is_authenticated %}
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          {% endif %}
+          <a class="navbar-brand" href=""><img src="{% static "favicon.png" %}" width="20" height="20"></a>
+          <div class="visible-xs hidden-sm hidden-md hidden-lg">
+            <ul class="navbar-nav pull-right list-inline nav-none-collapse">
+              
+              <li><a href="#top" title="Top"><span class="glyphicon glyphicon-triangle-top" aria-hidden="true" title="top"></span></a></li>
+              {% if user.is_authenticated %}
+              <li><a href="" title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true" title="logout"></span></a></li>
+              {% if user.is_staff %}
+              {% url 'SettingsList' as current_url %}<li{% if current_url in request.path %} class="active"{% endif %}><a href="{{ current_url }}"><span class="glyphicon glyphicon-cog" aria-hidden="true" title="settings"></span></a></li>
+              {% endif %}
+              {% endif %}
+            </ul>
+          </div>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <a class="navbar-brand" href="{% url 'ssh:index' %}">SSH</a>
+          <ul class="nav navbar-nav">
+            {% if user.is_authenticated %}
+            <li><a href="" title="Hosts">SSH</a></li>
+          
+            {% endif %}
+          </ul>
+          <ul class="hidden-xs nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+              <li><a href="" title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true" title="logout"></span></a></li>        
+            {% endif %}
+          </ul>
         </div>
       </div>
     </nav>

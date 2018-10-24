@@ -4,55 +4,72 @@
 
 {% block content %}
 <div class="row col-12 col-sm-12 col-lg-12">
-Connecting....<br>
-ID: {{idSSH}}
+
 {% with obj as a %}
-   <textarea id="area"></textarea>
-   <button hidden="none" id="send">Send command</button>
-   <button id="connect">Connect</button>
-   <button hidden="none" id="disconnect">Disconnect</button>
+   <textarea id="area" rows="15" cols="100"></textarea>
+   <input id="cmd" type="text" size="100">
+   <button id="send" hidden="none">Send command</button>
+   <button id="connect"> connect</button>
+   <button id="disconnect"> disconnect</button>
+   <!-- <button id="connect">Connect</button>
+   <button hidden="none" id="disconnect">Disconnect</button> -->
 {% endwith %}
 
 
 </div>
 <script>
 
-	$("#connect").click(function(){
+	
 
-		$.ajax({
-			type:"POST",
-			url:'connect',
-			data:{
-				'id':'{{a.id}}',
-				csrfmiddlewaretoken: '{{ csrf_token }}'
-			},
-			async:true,
-			dataType: 'json',
-			success: function(data){
-				$("#area").append(data.status+'\n');
-				if (data.code==1){
-					$("#connect").attr("hidden","none");
-					$("#send").removeAttr("hidden");
-					$("#disconnect").removeAttr("hidden");
-				}
-			}
-		});
-	});
-	$("#disconnect").click(function(){
-		$.ajax({
-			type:"POST",
-			url:"disconnect",
-			data:{
-				'id':'{{a.id}}',
-				csrfmiddlewaretoken: '{{ csrf_token }}'
-			},
-			dataType:"json",
-			success: function(){
+	var idconnection = {{obj.id}}
 
-			}
-		});
-	});
+	var sshSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/ssh/' + idconnection + '/');
+
+	sshSocket.onmessage = function(e){
+		var data = JSON.parse(e.data);
+		var message =data['message'];
+		if(message=="Connect successfully"){
+			$("#connect").hide();
+			$("#send").show();
+		}
+
+		$("#area").append(message+'\n');
+
+	}
+
+	sshSocket.onclose =function(e){
+		console.error('SSH socket is closed');
+	}
+
+	document.querySelector("#cmd").onkeyup = function(e){
+		if(e.keyCode === 13){
+			document.querySelector("#send").click();
+		}
+	}
+
+	document.querySelector('#send').onclick = function(e) {
+		var cmd = document.querySelector("#cmd").value.trim();
+        if(cmd!=''){
+        	sshSocket.send(JSON.stringify({
+            	'message': cmd
+        	}));
+        	document.querySelector("#cmd").value ='';
+        }
+    };
+    document.querySelector('#connect').onclick = function(e) {
+		sshSocket.send(JSON.stringify({
+            	'message': 'connect:{{obj.id}}'
+        	}));
+    };
+    document.querySelector('#disconnect').onclick = function(e) {
+		sshSocket.send(JSON.stringify({
+            	'message': 'disconnect'
+        	}));
+    };
+
+    
+
 </script>
-
-
 {% endblock %}

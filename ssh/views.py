@@ -20,7 +20,7 @@ def index(request):
 def detail(request, id):
 	if not request.user.is_superuser:
 		try:
-			getSSH = SSH.objects.filter(sshpermission__user__username='test',sshpermission__permission=True,id=id)
+			getSSH = SSH.objects.filter(sshpermission__user__username=request.user.username,sshpermission__permission=True)
 			obj = get_object_or_404(getSSH, id=id)
 			context = {'obj':obj}
 		except SSHPermission.DoesNotExist:
