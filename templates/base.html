@@ -32,7 +32,7 @@
             <span class="icon-bar"></span>
           </button>
           {% endif %}
-          <a class="navbar-brand" href=""><img src="{% static "favicon.png" %}" width="20" height="20"></a>
+          <a class="navbar-brand" href="/"><img src="{% static "favicon.png" %}" width="20" height="20"></a>
           <div class="visible-xs hidden-sm hidden-md hidden-lg">
             <ul class="navbar-nav pull-right list-inline nav-none-collapse">
               
@@ -49,13 +49,20 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             {% if user.is_authenticated %}
-            <li><a href="" title="Hosts">SSH</a></li>
+            <li><a href="{% url 'ssh:index' %}" title="Hosts">SSH</a></li>
           
             {% endif %}
           </ul>
+          <p class=" nav navbar-nav hello" style="color:white;padding-left: 70%;padding-top: 13px;">
+            Hello {% if user.is_authenticated %} {{user.username}} {% else %} Guest {%endif%}!
+          </p>  
           <ul class="hidden-xs nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-              <li><a href="" title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true" title="logout"></span></a></li>        
+             
+              <li><a href="/logout" title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true" title="logout"></span></a></li> 
+            {% else %}   
+              
+              <li><a href="/login" title="login"><span class="glyphicon glyphicon-log-in" aria-hidden="true" title="login"></span></a></li>        
             {% endif %}
           </ul>
         </div>

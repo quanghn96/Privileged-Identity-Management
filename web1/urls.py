@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from . import views 
 
 urlpatterns = [
 	url(r'^ssh/', include('ssh.urls')),
 	url(r'^admin/', admin.site.urls),
+    url(r'^$', views.index),
+    url(r'^login/', views.loginUser),
+    url(r'^logout/', views.logoutUser),
 ]
