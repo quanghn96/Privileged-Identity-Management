@@ -1,18 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}SSH Manager{% endblock %}
+{% block title %}SSH Connection{% endblock %}
 
 {% block content %}
-<div class="row col-12 col-sm-12 col-lg-12">
-Creating ssh-keys<br>
-Assign them to groups<br>
-Create hosts<br>
-Create os-users (root, tom, oracle, postgres, ...)<br>
-Define permissions which groups of ssh-keys is allowed to connect to which os-users on which hosts<br>
+
 {% if obj.sshconnection.count > 0 and obj.permission %}
-	{% for i in obj.sshconnection.all %}
-		Ip: {{i.ip}} | Port: {{i.port}} | <a href="{% url 'ssh:detail' i.id %}">Connect</a><br>
-	{% endfor %}
+	<table class="table">
+		<thead>
+			<tr>
+				<th>IP</th>
+				<th>Port</th>
+				<th>Connect</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for i in obj.sshconnection.all %}
+		<tr>
+			<td>{{i.ip}}</td>
+			<td>{{i.port}}</td>
+			<td><a href="{% url 'ssh:detail' i.id %}" class="btn btn-primary">Access</a></td>
+		</tr>	
+		
+		{% endfor %}
+		</tbody>			
+		</tbody>		
+
 {% else %}
 	You do not have any ssh connection!
 {% endif %}
