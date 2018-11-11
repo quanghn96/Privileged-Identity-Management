@@ -22,7 +22,7 @@
     				<td>{{i.ip}}</td>
     				<td>{{i.port}}</td>
     				<td><button type="button" class="btn btn-success viewUser" id="{{i.id}}" data-toggle="modal" data-target="#myModal">View</button> <button type="button" class="btn btn-info addUser" id="{{i.id}}" data-toggle="modal" data-target="#myModal1">Add</button></td>
-    				<td><button type="button" class="btn btn-primary">Go</button></td>
+    				<td><a href="{% url 'ssh:monitor' i.id %}" type="button" class="btn btn-primary"">Go</a></td>
     			</tr>	
     		{% endfor %}
     	{% endif %}

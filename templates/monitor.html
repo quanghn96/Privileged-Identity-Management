@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}SSH Monitor{% endblock %}
+
+{% block content %}
+<div class="row col-12 col-sm-12 col-lg-12">
+<textarea id="area" rows="15" cols="100"></textarea>
+<!-- <input id="cmd" type="text" size="100">
+<button id="send" hidden="none">Send command</button>
+<button id="connect"> connect</button>
+<button id="disconnect"> disconnect</button> -->
+   <!-- <button id="connect">Connect</button>
+   <button hidden="none" id="disconnect">Disconnect</button> -->
+
+{{obj}}
+</div>
+<script>
+
+	var idconnection = {{object.id}}
+	var sshSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/ssh/' + idconnection + '/');
+
+	sshSocket.onmessage = function(e){
+		var data = JSON.parse(e.data);
+		var message =data['message'];
+		$("#area").append(message+'\n');
+	}
+
+	sshSocket.onclose =function(e){
+		console.error('SSH socket is closed');
+	}
+    
+</script>
+{% endblock %}

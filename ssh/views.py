@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 
 
+
 def index(request):
 	if not request.user.is_superuser:
 		try:
@@ -21,12 +22,21 @@ def index(request):
 	else:
 		return render(request,'index.html')	
 
+@login_required(login_url='/login')	
 def detail(request, id):
 	if not request.user.is_superuser:
 		try:
 			getSSH = SSH.objects.filter(sshpermission__user__username=request.user.username,sshpermission__permission=True)
 			obj = get_object_or_404(getSSH, id=id)
 			context = {'obj':obj}
+			# #Create status SSH
+			# getStatus = statusSSH.filter(connection__id=id)
+			# s = SSH.objects.get(id=id)
+			# if not getStatus:
+			# 	createStatus = statusSSH.objects.create(connection=s,status = False)
+			# 	createStatus.save()
+			# else:
+
 		except SSHPermission.DoesNotExist:
 			context = None	
 		return render(request, 'detail.html', context)			
@@ -46,7 +56,20 @@ def manage(request):
 		}
 	except:
 		return render(request, 'manage.html')
-	return render(request, 'manage.html',context)	
+	return render(request, 'manage.html',context)
+
+@login_required(login_url='/login')	
+def monitor(request, id):
+	try:#check user is in permission and get idlocation
+		getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
+		#Get ssh
+		getSSH = SSH.objects.get(area__id=getLocation.location.id, id=id)
+		context ={
+		'object':getSSH
+		}
+	except:
+		return render(request, 'login.html')
+	return render(request, 'monitor.html',context)
 
 def get_User(request):
 	id = request.GET.get('id','None')#id SSH connection
@@ -86,6 +109,7 @@ def add_User(request):
 				return JsonResponse({'id':'User has been added already'})
 			else:
 				obj.sshconnection.add(s)
+				obj.permission = Trueuang12
 				obj.save()
 				return JsonResponse({'id':'User has been added'})
 
