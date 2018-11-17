@@ -35,8 +35,8 @@ class BlackList(models.Model):
 		return self.keyword
 
 class TimeBlackList(models.Model):
-	list = models.ManyToManyField(BlackList)
-	ssh = models.ForeignKey(SSH, on_delete=models.CASCADE, unique=True)
+	cmd = models.ForeignKey(BlackList, on_delete=models.CASCADE, null=True)
+	ssh = models.ForeignKey(SSH, on_delete=models.CASCADE)
 	startTime = models.TimeField(auto_now=False, auto_now_add=False)
 	endTime = models.TimeField(auto_now=False, auto_now_add=False)
 

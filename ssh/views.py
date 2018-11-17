@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from .models import SSHPermission ,SSH
+from .models import SSHPermission ,SSH, BlackList, TimeBlackList
 from Location.models import Area, AdminSSH
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
@@ -50,13 +50,46 @@ def manage(request):
 		getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
 		#GEt all connection with admin's location
 		getSSH = SSH.objects.filter(area__id=getLocation.location.id)
-		
+		getBlackList = BlackList.objects.all()
 		context ={
-		'object':getSSH
+		'object':getSSH,
+		'blacklist':getBlackList
 		}
 	except:
 		return render(request, 'manage.html')
 	return render(request, 'manage.html',context)
+
+def getTimeCommand(request):
+	try:
+		idSSH = request.GET.get('idSSH','None')#id SSH connection
+		selectedCommand = request.GET.get('selectedCommand','None')
+		check = TimeBlackList.objects.filter(ssh__id=idSSH, cmd__id=selectedCommand)
+		if check:
+			return JsonResponse(serializers.serialize('json', check, fields=('startTime','endTime')),  safe=False)
+	except:
+		return JsonResponse({'id':'Fail'})
+	return JsonResponse({'id':'Fail'})		
+
+def setTimeCommand(request):
+	try:
+		idSSH = request.GET.get('idSSH','None')#id SSH connection
+		stTime = request.GET.get('startTime','None')
+		eTime = request.GET.get('endTime','None')
+		selectedCommand = request.GET.get('selectedCommand','None')
+		bl = BlackList.objects.get(pk=selectedCommand)
+		s = SSH.objects.get(pk=idSSH)
+		obj = TimeBlackList.objects.filter(cmd=bl,ssh=s)
+		if obj:
+			obj = TimeBlackList.objects.get(cmd=bl,ssh=s)
+			obj.startTime = stTime
+			obj.endTime = eTime
+			obj.save()
+			return JsonResponse({'id':'ok'})
+		else:
+			obj = TimeBlackList.objects.create(cmd=bl, ssh=s, startTime=stTime,endTime=eTime)	
+			return JsonResponse({'id':'ok'})
+	except:
+		return JsonResponse({'id':'Fail'})
 
 @login_required(login_url='/login')	
 def monitor(request, id):

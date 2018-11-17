@@ -5,15 +5,15 @@
 {% block content %}
 <div class="row col-12 col-sm-12 col-lg-12">
 
-{% with obj as a %}
-   <textarea id="area" rows="15" cols="100"></textarea>
-   <input id="cmd" type="text" size="100">
+
+   <textarea id="area" rows="15" cols="100" readonly></textarea>
+   <input id="cmd" type="text" size="100" disabled="True">
    <button id="send" hidden="none">Send command</button>
    <button id="connect"> connect</button>
-   <button id="disconnect"> disconnect</button>
+   <button id="disconnect" hidden="none"> disconnect</button>
    <!-- <button id="connect">Connect</button>
    <button hidden="none" id="disconnect">Disconnect</button> -->
-{% endwith %}
+
 
 
 </div>
@@ -30,6 +30,8 @@
 		if(message=="Connect successfully"){
 			$("#connect").hide();
 			$("#send").show();
+      $("#disconnect").show();
+      $("#cmd").removeAttr("disabled");
 		}
 
 		$("#area").append(message+'\n');

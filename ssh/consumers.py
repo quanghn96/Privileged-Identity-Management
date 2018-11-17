@@ -30,7 +30,7 @@ class SSHConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         AccessSSH.objects.filter(ssh=self.s).delete()
         self.close()
-        
+
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -39,7 +39,7 @@ class SSHConsumer(WebsocketConsumer):
             statusConnect = SSHManage.connectSSH(self, message.split(":")[1])
             if statusConnect==1 :
                 self.send(text_data=json.dumps({
-                    'message':self.idSSH 
+                    'message':'Connect successfully' 
                     }))
             else:
                 self.send(text_data=json.dumps({
@@ -61,7 +61,7 @@ class SSHConsumer(WebsocketConsumer):
     def chat_message(self, event):
         message = event['message']
         self.send(text_data=json.dumps({
-                'message':message
+                'message': message
                 }))
         sp = message.split('|')
         check = -1

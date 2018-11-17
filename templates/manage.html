@@ -12,7 +12,7 @@
         <th>IP</th>
         <th>PORT</th>
         <th>Manage User</th>
-        <th>Monitor</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -22,7 +22,9 @@
     				<td>{{i.ip}}</td>
     				<td>{{i.port}}</td>
     				<td><button type="button" class="btn btn-success viewUser" id="{{i.id}}" data-toggle="modal" data-target="#myModal">View</button> <button type="button" class="btn btn-info addUser" id="{{i.id}}" data-toggle="modal" data-target="#myModal1">Add</button></td>
-    				<td><a href="{% url 'ssh:monitor' i.id %}" type="button" class="btn btn-primary"">Go</a></td>
+
+    				<td><a href="{% url 'ssh:monitor' i.id %}" type="button" class="btn btn-primary"">Monitor</a> 
+              <button type="button" class="btn btn-success checkBlackList" id="{{i.id}}" data-toggle="modal" data-target="#myModal2">Black List</button></td>
     			</tr>	
     		{% endfor %}
     	{% endif %}
@@ -80,6 +82,45 @@
       
     </div>
   </div>
+
+  <!-- Modal Add -->
+  <div class="modal fade" id="myModal2" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Black List</h4>
+        </div>
+        <div class="modal-body">
+          <div style="margin-bottom: 33px;">
+            <div>Set time for back list</div>
+            <select class="command">
+              <option disabled selected value id="select"> -- select an option -- </option>
+            {% for i in blacklist%}
+              <option value="{{i.id}}">{{i.keyword}}</option>
+            {% endfor %}
+            </select>
+          </div>  
+          <div class="container">
+            <div class="col-md-2">Start time <br>End time</div>
+            <div class="col-md-2"> <input id="startTime" type="text"><br><input id="endTime" type="text"></div>
+          </div>
+          <div id="err-message-cmd" style="color:red;" hidden="none">
+          </div>  
+           
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary SaveTime">Save changes</button>
+          <button type="button" class="btn btn-default closeTime" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
 {% endblock %}
 {% block footer %}
 

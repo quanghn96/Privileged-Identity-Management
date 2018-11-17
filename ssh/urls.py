@@ -11,5 +11,7 @@ urlpatterns = [
 	url(r'^ajax/get_User/$', views.get_User, name='get_User'),\
 	url(r'^ajax/delete_User/$', views.delete_User, name='delete_User'),
 	url(r'^ajax/add_User/$', views.add_User, name='add_User'),
+	url(r'^ajax/getTimeCommand/$', views.getTimeCommand, name='getTimeCommand'),
+	url(r'^ajax/setTimeCommand/$', views.setTimeCommand, name='setTimeCommand'),
     # ex: /polls/5/results/
 ]

@@ -72,4 +72,65 @@ $(document).ready(function(){
         });
         }
     });
+    $('.checkBlackList').click(function(){
+        idSSH = this.id;
+        $('#startTime').val('');
+        $('#endTime').val('');
+        $("#select").attr("selected",true);
+    });
+    var selectedCommand=0;
+    $("select.command").change(function(){
+        selectedCommand = $(this).children("option:selected").val();
+        $.ajax({
+            url:'/ssh/ajax/getTimeCommand/',
+            data:{
+                'idSSH':idSSH,
+                'selectedCommand':selectedCommand
+            },
+            dataType:'json',
+            success: function(data){
+                if(data.id!='Fail'){
+                    var obj = jQuery.parseJSON(data);console.log(obj.pk); 
+                    $(obj).each(function(i, item){
+                        $('#startTime').val(item.fields.startTime);
+                        $('#endTime').val(item.fields.endTime);
+                    })
+                }else {
+                    $('#startTime').val('');
+                    $('#endTime').val('');
+                }
+            }
+        })
+    });
+    $(".btn.btn-primary.SaveTime").click(function(){
+        start = $('#startTime').val();
+        end = $('#endTime').val();
+
+        if(start.trim()!=null && end.trim()!=null){
+            $.ajax({
+                url:'/ssh/ajax/setTimeCommand/',
+                data:{
+                    'idSSH':idSSH,
+                    'startTime':start,
+                    'endTime':end,
+                    'selectedCommand':selectedCommand
+                },
+                dataType:'json',
+                success: function(data){
+                    
+                    if(data.id=="Fail"){
+                        $("#err-message-cmd").text("");
+                        $("#err-message-cmd").text("Save fail !");
+                        $("#err-message-cmd").show();
+                    }
+                    else {
+                        $("#err-message-cmd").text("");
+                        $("#err-message-cmd").text("Successful!");
+                        $("#err-message-cmd").show();
+                    }
+                }
+            })
+        }
+    });
+
 });
