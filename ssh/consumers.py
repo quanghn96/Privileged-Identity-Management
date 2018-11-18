@@ -4,8 +4,10 @@ from channels.generic.websocket import WebsocketConsumer
 import json
 from django.contrib.auth.models import User
 import paramiko
-from .models import SSHPermission ,SSH, BlackList, AccessSSH
+from .models import SSHPermission ,SSH, BlackList, AccessSSH, TimeBlackList
 from django.shortcuts import get_object_or_404
+import datetime
+from datetime import datetime
 client = paramiko.SSHClient()
 
 
@@ -66,8 +68,24 @@ class SSHConsumer(WebsocketConsumer):
         sp = message.split('|')
         check = -1
         for i in sp:
-            if BlackList.objects.filter(keyword=i.strip()):
-                check = i
+            # if BlackList.objects.filter(keyword=i.strip()):
+            #     check = i
+            bl = BlackList.objects.filter(keyword=i.strip())
+            if bl:
+                cmd = TimeBlackList.objects.filter(cmd__keyword=i.strip(), ssh=self.s)
+                if cmd:
+                    cmd = TimeBlackList.objects.get(cmd__keyword=i.strip(), ssh=self.s)
+                    now = datetime.now().strftime('%H:%M:%S')
+                    date_now = datetime.strptime(now,'%H:%M:%S').time()
+                    if cmd.startTime <= date_now and cmd.endTime >= date_now:
+                        check = -1
+                    else:
+                        check = 1
+                else:
+                    check = i                  
+
+
+                      
         if check != -1:
             errorMessage = 'Command "' +i + '" is not allowed!'
             self.send(text_data=json.dumps({
