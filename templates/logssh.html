@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Log SSH{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-2">Select User</div>
+		<div class="col-md-3">
+			<select class="vlog">
+              <option disabled selected value id="select"> -- select an option -- </option>
+              {% if object %}
+              {% for i in object %}
+              <option value="{{i.id}}">{{i.username}}</option>
+              {% endfor %}
+              {% endif %}
+            </select>
+		</div>
+		<div class="col-md-5"></div>
+	</div>
+	<div class="row">
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="col-md-3">Date</th>
+					<th class="col-md-3">Time</th>
+					<th>Command</th>
+				</tr>	
+			</thead>
+			<tbody class="showLogSSH">
+			</tbody>
+	</div>
+</div>
+
+{% endblock %}

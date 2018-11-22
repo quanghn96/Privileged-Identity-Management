@@ -1,8 +1,8 @@
 from django.http import HttpResponse
-from .models import SSHPermission ,SSH, BlackList, TimeBlackList
+from .models import SSHPermission ,SSH, BlackList, TimeBlackList, AccessSSH, LogCommand
 from Location.models import Area, AdminSSH
 from django.template import loader
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 import paramiko
 from django.http import JsonResponse
 from django.contrib.auth.models import User
@@ -97,12 +97,53 @@ def monitor(request, id):
 		getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
 		#Get ssh
 		getSSH = SSH.objects.get(area__id=getLocation.location.id, id=id)
+		u = AccessSSH.objects.filter(ssh=getSSH)
+		if u:
+			u = AccessSSH.objects.get(ssh=getSSH)
+			u = u.user.username
+		else:
+			u='None'	
 		context ={
-		'object':getSSH
+		'object':getSSH,
+		'u':u
+		
 		}
 	except:
 		return render(request, 'login.html')
 	return render(request, 'monitor.html',context)
+
+@login_required(login_url='/login')	
+def logSSH(request, id):
+	if request.user.is_staff:
+		try:
+			u = User.objects.filter(sshpermission__sshconnection__id=id)
+			context = {
+			'object':u,
+			}
+			return render(request, 'logssh.html', context)
+		except:
+			return render(request, 'logssh.html')
+	else:
+		return redirect('/')
+		
+def viewLog(request):
+	idSSH = request.GET.get('idSSH','None')#id SSH connection
+	try:
+		u = User.objects.filter(sshpermission__sshconnection__id=idSSH)
+		return JsonResponse(serializers.serialize('json', u, fields=('username')),  safe=False)		
+	except:
+		return JsonResponse({'id':'Fail !'})
+
+def viewLogUser(request):
+	idSSH = request.GET.get('idSSH','None')#id SSH connection
+	idUser = request.GET.get('idUser','None') #id User
+	try:
+		#delete Empty logcommand
+		LogCommand.objects.filter(connection__id=idSSH, command='').delete()
+		listLog = LogCommand.objects.filter(user__id=idUser, connection__id=idSSH).order_by('logTime').reverse()
+		return JsonResponse(serializers.serialize('json', listLog, fields=('logTime','command')),  safe=False)
+	except:
+		return JsonResponse({'id':'Fail !'})
 
 def get_User(request):
 	id = request.GET.get('id','None')#id SSH connection
@@ -142,7 +183,7 @@ def add_User(request):
 				return JsonResponse({'id':'User has been added already'})
 			else:
 				obj.sshconnection.add(s)
-				obj.permission = Trueuang12
+				obj.permission = True
 				obj.save()
 				return JsonResponse({'id':'User has been added'})
 

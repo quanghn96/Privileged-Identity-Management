@@ -13,6 +13,7 @@
         <th>PORT</th>
         <th>Manage User</th>
         <th>Action</th>
+        <th>Report</th>
       </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
 
     				<td><a href="{% url 'ssh:monitor' i.id %}" type="button" class="btn btn-primary"">Monitor</a> 
               <button type="button" class="btn btn-success checkBlackList" id="{{i.id}}" data-toggle="modal" data-target="#myModal2">Black List</button></td>
+            <td><button type="button" class="btn btn-warning viewLog" id="{{i.id}}" data-toggle="modal" data-target="#myModal3">View</button></td>
     			</tr>	
     		{% endfor %}
     	{% endif %}
@@ -113,6 +115,27 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary SaveTime">Save changes</button>
+          <button type="button" class="btn btn-default closeTime" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Modal View Log -->
+  <div class="modal fade" id="myModal3" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">View Log SSH</h4>
+        </div>
+        <div class="modal-body logSSH">
+          
+        </div>
+        <div class="modal-footer">
           <button type="button" class="btn btn-default closeTime" data-dismiss="modal">Close</button>
         </div>
       </div>

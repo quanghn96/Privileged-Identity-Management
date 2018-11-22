@@ -25,7 +25,7 @@ SECRET_KEY = '^mo*^!0#)#bqaix5wg65rmw$ekd730s$jh=g-%yv&z1a_+31d&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['116.109.245.187','192.168.1.15','192.168.1.8', '192.168.1.*','127.0.0.1','localhost','192.168.35.27','192.168.35.25']
+ALLOWED_HOSTS = ['116.109.245.187','192.168.1.15','192.168.1.8', '192.168.1.*','127.0.0.1','localhost','192.168.35.27','quangcao3mtp.homeip.net','192.168.35.25']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'ssh',
     'Location',
     'channels',
+    
 ]
 
 ASGI_APPLICATION = 'web1.routing.application'

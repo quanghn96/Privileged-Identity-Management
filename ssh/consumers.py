@@ -4,7 +4,7 @@ from channels.generic.websocket import WebsocketConsumer
 import json
 from django.contrib.auth.models import User
 import paramiko
-from .models import SSHPermission ,SSH, BlackList, AccessSSH, TimeBlackList
+from .models import SSHPermission ,SSH, BlackList, AccessSSH, TimeBlackList, LogCommand
 from django.shortcuts import get_object_or_404
 import datetime
 from datetime import datetime
@@ -19,20 +19,22 @@ class SSHConsumer(WebsocketConsumer):
         self.idSSH = self.scope['path'].split('/')[3]
         self.user = self.scope['user']
         self.s = SSH.objects.get(pk=self.idSSH)
-        obj, created = AccessSSH.objects.get_or_create(ssh=self.s)
-        
-        if created or self.user.is_staff:
+        if not self.user.is_staff:
+            obj, created = AccessSSH.objects.get_or_create(ssh=self.s, user = self.scope['user'])
+        else:
+            created = True    
+        if created:
+            if created:
+                LogCommand.objects.create(user=self.scope['user'], connection= self.s)
             async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
             )
             self.accept()
 
-
     def disconnect(self, close_code):
         AccessSSH.objects.filter(ssh=self.s).delete()
         self.close()
-
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -57,11 +59,14 @@ class SSHConsumer(WebsocketConsumer):
                 'type': 'chat_message',
                 'message': message
                 }
-            )
-        
+            )     
         
     def chat_message(self, event):
         message = event['message']
+        logcmd = LogCommand.objects.filter(user=self.scope['user'],connection=self.s).latest('logTime')
+        logcmd.command +=(message+'||||')
+        logcmd.save()
+       
         self.send(text_data=json.dumps({
                 'message': message
                 }))
@@ -107,8 +112,19 @@ class SSHManage:
     	client.close()
 
     def command(self, message):
-    	stdin, stdout, stderr = client.exec_command(message)
-    	for line in stdout:
-    		self.send(text_data=json.dumps({
-    			'message':line.rstrip()
+        if message.split(' ')[0]=='cat':
+            sftp_client = client.open_sftp()
+            remote_file = sftp_client.open(message.split(' ')[1])
+            try:
+                for line in remote_file:
+                    self.send(text_data=json.dumps({
+                        'message':line.rstrip()
+                        }))
+            finally:
+                remote_file.close()        
+        else:    
+            stdin, stdout, stderr = client.exec_command(message)
+            for line in stdout:
+                self.send(text_data=json.dumps({
+                    'message':line.rstrip()
     			}))   		

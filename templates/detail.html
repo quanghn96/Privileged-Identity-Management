@@ -39,7 +39,7 @@
 	}
 
 	sshSocket.onclose =function(e){
-		console.error('SSH socket is closed');
+		$("#area").append('Disconnected !');
 	}
 
 	document.querySelector("#cmd").onkeyup = function(e){
@@ -66,6 +66,10 @@
 		sshSocket.send(JSON.stringify({
             	'message': 'disconnect'
         	}));
+      $("#connect").hide();
+      $("#send").hide();
+      $("#disconnect").hide();
+      $("#cmd").attr("disabled",'none');
     };
 
     

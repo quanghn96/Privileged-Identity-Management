@@ -47,9 +47,10 @@ class LoginInfo(models.Model):
 
 class LogCommand(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	connection = models.ManyToManyField(SSH)
+	connection = models.ForeignKey(SSH, on_delete=models.CASCADE, null=True)
 	logTime = models.DateTimeField(default=timezone.now)
-	command = models.TextField(max_length=1000)
+	command = models.TextField(max_length=1000, default='')
 
 class AccessSSH(models.Model):
 	ssh = models.OneToOneField(SSH, on_delete=models.CASCADE)
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
