@@ -20,7 +20,12 @@ def index(request):
 			context = None	
 		return render(request, 'index.html', context)			
 	else:
-		return render(request,'index.html')	
+		try:
+			obj = get_object_or_404(SSHPermission, user__username=request.user.username)
+			context = {'obj':obj}
+		except:
+			context = None
+		return render(request, 'index.html', context)	
 
 @login_required(login_url='/login')	
 def detail(request, id):
@@ -48,9 +53,13 @@ def manage(request):
 	if not request.user.is_staff:
 		return redirect('/')
 	try:#Get admin's location
-		getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
-		#GEt all connection with admin's location
-		getSSH = SSH.objects.filter(area__id=getLocation.location.id)
+		if request.user.is_superuser:
+			getLocation = AdminSSH.objects.all()
+			getSSH = SSH.objects.all()
+		else:
+			getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
+			#GEt all connection with admin's location
+			getSSH = SSH.objects.filter(area__id=getLocation.location.id)
 		getBlackList = BlackList.objects.all()
 		context ={
 		'object':getSSH,
@@ -97,9 +106,11 @@ def monitor(request, id):
 	if not request.user.is_staff:
 		return redirect('/')
 	try:#check user is in permission and get idlocation
-		getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
-		#Get ssh
-		getSSH = SSH.objects.get(area__id=getLocation.location.id, id=id)
+		if request.user.is_superuser:
+			getSSH = SSH.objects.get(id=id)
+		else:
+			getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
+			getSSH = SSH.objects.get(area__id=getLocation.location.id, id=id)
 		u = AccessSSH.objects.filter(ssh=getSSH)
 		if u:
 			u = AccessSSH.objects.get(ssh=getSSH)
@@ -112,7 +123,7 @@ def monitor(request, id):
 		
 		}
 	except:
-		return render(request, 'login.html')
+		return redirect('/')
 	return render(request, 'monitor.html',context)
 
 @login_required(login_url='/login')	

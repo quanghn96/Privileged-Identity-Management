@@ -88,12 +88,15 @@ def addticket(request):
 
 @login_required(login_url='/login')
 def message(request):
-    if not request.user.is_staff or request.user.is_superuser:
+    if not request.user.is_staff:
         return redirect('/')
     else:
         try:
-            u = AdminSSH.objects.get(admin=request.user)
-            t = Ticket.objects.filter(location=u.location)
+            if request.user.is_superuser:
+                t = Ticket.objects.all()
+            else:
+                u = AdminSSH.objects.get(admin=request.user)
+                t = Ticket.objects.filter(location=u.location) 
             return render(request, 'message.html',{'obj':t})   
         except:
             return render(request, 'message.html')   
