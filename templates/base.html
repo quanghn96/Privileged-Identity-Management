@@ -55,8 +55,14 @@
           <ul class="nav navbar-nav">
             {% if user.is_authenticated %}
             <li><a href="{% url 'ssh:index' %}" title="Hosts">SSH</a></li>
-            {% if user.is_staff %}
+            {% if user.is_staff and not user.is_superuser %}
               <li><a href="{% url 'ssh:manage' %}" title="Hosts">Manage</a></li>
+              <li><a href="{% url 'message' %}" title="Message">Message</a></li>
+            {% elif not user.is_superuser %}  
+            <li><a href="{% url 'ticket' %}" title="Ticket">Ticket</a></li>
+            <li><a href="{% url 'myTicket' %}" title="Ticket">My Ticket</a></li>
+            {% else %}
+             <li><a href="{% url 'ssh:connection' %}" title="Connection">Connection SSH</a></li>
             {% endif %}
             {% endif %}
           </ul>

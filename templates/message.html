@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Message {% endblock %}
+
+{% block content %}
+
+<div class="container Ticket">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Time</th>
+				<th>Username</th>
+				<th>Title</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for i in obj %}
+				<tr>
+					<td>{{i.time}}</td>
+					<td>{{i.user.username}}</td>
+					<td>{{i.title}}</td>
+					<td><a href="{{i.id}}" type="button" class="btn btn-info ViewTicket">Info</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

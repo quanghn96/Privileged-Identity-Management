@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-
+from django.core import signing
 
 
 def index(request):
@@ -45,7 +45,8 @@ def detail(request, id):
 
 @login_required(login_url='/login')	
 def manage(request):
-	
+	if not request.user.is_staff:
+		return redirect('/')
 	try:#Get admin's location
 		getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
 		#GEt all connection with admin's location
@@ -93,6 +94,8 @@ def setTimeCommand(request):
 
 @login_required(login_url='/login')	
 def monitor(request, id):
+	if not request.user.is_staff:
+		return redirect('/')
 	try:#check user is in permission and get idlocation
 		getLocation = get_object_or_404(AdminSSH, admin__username=request.user.username)
 		#Get ssh
@@ -212,3 +215,66 @@ def connect(request, id):
 def disconnect(request, id):
 	if ssh:
 		ssh.close()
+
+@login_required(login_url='/login')
+def connection(request):
+	if request.user.is_superuser:
+		obj = SSH.objects.all()
+		area = Area.objects.all()
+		return render(request, 'connection.html', {'obj':obj, 'area':area})
+	else:
+		return redirect('/')
+
+def addconnection(request):
+	try:
+		ip = request.GET.get('ip','None')#id user
+		port = request.GET.get('port','None')#id user
+		username = request.GET.get('username','None')#id user
+		password = request.GET.get('pass','None')#id user
+		idLoc = request.GET.get('idLoc','None')#id user
+		a = Area.objects.get(pk=idLoc)
+		port = int(port)
+		idLoc = int(idLoc)
+		val = signing.dumps(password)
+		SSH.objects.create(ip=ip, port=port, username=username, password=val, area = a)
+		return JsonResponse({'id':'OK'})
+	except:
+		return JsonResponse({'id':'Fail'})
+
+def DeleteConnection(request):
+	try:
+		id = request.GET.get('id','None')#id user
+		SSH.objects.get(pk=id).delete()
+		return JsonResponse({'id':'OK'})
+	except:
+		return JsonResponse({'id':'Fail'})
+
+def EditConnection(request):
+	try:
+		id = request.GET.get('id','None')#id user
+		s = SSH.objects.filter(pk=id)
+		return JsonResponse(serializers.serialize('json', s, fields=('ip','port','username')),  safe=False)		
+	except:
+		return JsonResponse({'id':'Fail'})
+
+def SaveEditConnection(request):
+	try:
+		idSSH = request.GET.get('id','None')#id user
+		ip = request.GET.get('ip','None')#id user
+		port = request.GET.get('port','None')#id user
+		username = request.GET.get('username','None')#id user
+		password = request.GET.get('pass','None')#id user
+		idLoc = request.GET.get('idLoc','None')#id user
+		s = SSH.objects.get(pk=idSSH)
+		s.ip = ip
+		s.port = port
+		s.username = username
+		val = signing.dumps(password)
+		s.password = val
+		a = Area.objects.get(pk=idLoc)
+		s.area = a
+		s.save()
+		
+		return JsonResponse({'id':'OK'})
+	except:
+		return JsonResponse({'id':'Fail'})

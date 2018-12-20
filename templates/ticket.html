@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Create Ticket{% endblock %}
+
+{% block content %}
+
+<div class="container Ticket" id="{{idUser}}">
+	<div class="row">
+		<div class="col-sm-3">
+			Location
+		</div>
+		<div class="col-sm">
+			<select class="locationTicket">
+				<option disabled selected value id="select"> -- select an option -- </option>
+				{% for i in obj %}
+					<option id="{{i.id}}">{{ i.address }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		
+	</div>
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-sm-5">
+			<input id="titleTicket" type="text" name="title" style="width:550px">
+		</div>
+	</div>
+
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-sm-6" >
+			<textarea rows="15" style="width:550px" id="textTicket"></textarea>
+		</div>
+		<div class="col-sm-4">
+			<div>
+				Ghi chú: Nhập đầy đủ các thông tin cần yêu cầu được sử dụng, loại dịch vụ, thời điểm kết nối và các lệnh đặc quyền cần sử dụng.
+			</div>
+		</div>
+
+	</div>
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-sm-5">
+			<button type="text" id="sendTicket">Send</button>
+		</div>
+
+	</div> 
+</div>
+{% endblock %}

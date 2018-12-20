@@ -8,6 +8,7 @@ from .models import SSHPermission ,SSH, BlackList, AccessSSH, TimeBlackList, Log
 from django.shortcuts import get_object_or_404
 import datetime
 from datetime import datetime
+from django.core import signing
 client = paramiko.SSHClient()
 
 
@@ -87,10 +88,7 @@ class SSHConsumer(WebsocketConsumer):
                     else:
                         check = 1
                 else:
-                    check = i                  
-
-
-                      
+                    check = i                                       
         if check != -1:
             errorMessage = 'Command "' +i + '" is not allowed!'
             self.send(text_data=json.dumps({
@@ -104,7 +102,7 @@ class SSHManage:
     	obj = get_object_or_404(SSH, id=id)
     	client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     	try:
-    		client.connect(obj.ip, port=obj.port, username=obj.username,password=obj.password)
+    		client.connect(obj.ip, port=obj.port, username=obj.username,password=signing.loads(obj.password))
     	except:
     		return 0	
     	return 1;    

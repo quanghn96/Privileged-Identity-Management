@@ -208,5 +208,180 @@ $(document).ready(function(){
         });
     });
 
+    $("select.locationTicket").change(function(){
+        var idLocation = $(this).children("option:selected").attr('id');
+        $("#sendTicket").click(function(){
+            console.log('data');
+            var title = $("#titleTicket").val();            
+            var value = $('#textTicket').val();
+            var idUSer = $('.container.Ticket').attr('id');
+            if(value.trim()!=''){console.log(idUSer);
+                $.ajax({
+                    url:'/ajax/ticket',
+                    data:{
+                        'idLocation':idLocation,
+                        'message':value,
+                        'idUSer':idUSer,
+                        'title':title
+                    },
+                    dataType:'json',
+                    success: function(data){
+                        console.log(data);
+                        if(data.id=='OK'){
+                            $('.container.Ticket .row').remove();
+                            $('.container.Ticket').html('<div style="color:red;">Send Ticket Successfully</div>');
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    $('#AddConnectionBtn').click(function(){ 
+        $('#ip').val('') ;
+        $('#port').val('');
+        $('#username').val('');
+        $('#pass').val('');
+    });
+
+    $(".SaveConnection").click(function(){
+        var ip = $('#ip').val();
+        var port = $('#port').val();
+        var username = $('#username').val();
+        var pass = $('#pass').val();
+        var idLoc = $("option:selected").attr('id');
+        if(ip==null || port==null || username==null || pass==null){
+            alert('Values are empty');
+        }else {console.log(ip+' '+port+' '+username+' '+pass);
+            $.ajax({
+                url:'/ssh/ajax/addconnection',
+                data:{
+                    'ip':ip,
+                    'port':port,
+                    'username':username,
+                    'pass':pass,
+                    'idLoc':idLoc
+                },
+                dataType:'json',
+                success: function(data){
+                    if(data.id=="OK"){
+                        $('.ctnaddConnection').html('<div style="color:red;">Create Successfully</div>');
+                        $('.SaveConnection').hide();
+                    }else {
+                        $('.errormessageAdd').html('<div style="color:red;">Fail</div>');
+                    }
+                }
+            });
+        }
+
+    });
+
+    $(".DeleteConnection").click(function(){
+        var id = this.id;
+        $.ajax({
+            url:'/ssh/ajax/DeleteConnection',
+            data:{
+                'id':id
+            },
+            dataType:'json',
+            success: function(data){
+                alert(data.id);
+            }
+        });
+    });
+    $('.EditConnection').click(function(){
+        var Code = $('.ctnaddConnection').html();
+        $('.ctnaddConnection').html('');
+        var id = this.id;
+        $('#ip1').val('') ;
+        $('#port1').val('');
+        $('#username1').val('');
+        $('#pass1').val('');
+        $.ajax({
+            url:'/ssh/ajax/EditConnection',
+            data:{
+                'id':id
+            },
+            dataType:'json',
+            success: function(data){console.log(data);
+                var obj = jQuery.parseJSON(data);
+                var b = "";
+                $(obj).each(function(i,item){
+                   console.log(item.fields);
+                   $("#ip1").val(item.fields.ip);
+                   $("#port1").val(item.fields.port);
+                   $("#username1").val(item.fields.username);
+
+                })
+            }
+        });
+        $(".SaveEditConnection").click(function(){
+                        var ip = $('#ip1').val();
+                        var port = $('#port1').val();
+                        var username = $('#username1').val();
+                        var pass = $('#pass1').val();
+                        var idLoc = $("option:selected").attr('id');
+                        if(ip == '' || port == '' || username == '' || pass.trim() == ''){
+                            
+                        } 
+                        else {
+                            $.ajax({
+                                url:'/ssh/ajax/SaveEditConnection',
+                                data:{
+                                    'id':id,
+                                    'ip':ip,
+                                    'port':port,
+                                    'username':username,
+                                    'pass':pass,
+                                    'idLoc':idLoc
+                                },
+                                dataType:'json',
+                                success: function(data){
+                                    if(data.id=="OK"){
+                                        $('.ctnEditConnection').html('<div style="color:red;">Edit Successfully</div>');
+                                        $('.SaveEditConnection').hide();
+                                        $('.ctnaddConnection').html(Code);
+                                    }else {
+                                        $('.errormessageAdd').html('<div style="color:red;">Fail</div>');
+                                    }
+                                }
+                            });
+                        }
+                   });
+    });
+
+//[{"model": "ssh.ssh", "pk": 4, "fields": {"port": 22, "username": "root"}}]
+
+    $(".ViewTicket").click(function(){
+        var id = this.id;
+        $.ajax({
+            url:'/ajax/viewTicket',
+            data:{
+                'id':id
+            },
+            dataType:'json',
+            success: function(data){
+              $(".Ticket").html('');
+               console.log(data);
+            }
+        });
+    });
+
+    $(".sendMessageAdmin").click(function(){
+        var idTicket = window.location.pathname.split('/')[2];
+        var message = $("#messageText").val();
+        $.ajax({
+            url:'/ajax/AddMessage',
+            data:{
+                'idTicket':idTicket,
+                'message':message
+            },
+            dataType:'json',
+            success: function(data){
+                if(data.id=="OK") alert('Send message OK');
+            }
+        });
+    });
+
 
 });

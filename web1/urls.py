@@ -24,4 +24,11 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^login/', views.loginUser),
     url(r'^logout/', views.logoutUser),
+    url(r'^ticket/', views.ticket,name="ticket"),
+    url(r'^MyTicket/$', views.myTicket,name="myTicket"),
+    url(r'^MyTicket/(?P<id>[0-9]+)$', views.viewMessage,name="viewMyTicket"),
+    url(r'^ajax/ticket/$', views.addticket, name='addticket'),
+    url(r'^message/$', views.message,name="message"),
+    url(r'^message/(?P<id>[0-9]+)$', views.viewMessage,name="viewMessage"),
+    url(r'^ajax/AddMessage/$', views.AddMessage, name='AddMessage'),
 ]
