@@ -54,3 +54,7 @@ class LogCommand(models.Model):
 class AccessSSH(models.Model):
 	ssh = models.OneToOneField(SSH, on_delete=models.CASCADE)
 	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+
+class GrantHistory(models.Model):
+	log = models.TextField(max_length=100, default='')
+	pub_date = models.DateTimeField(default=timezone.now)

@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from .models import SSHPermission ,SSH, BlackList, TimeBlackList, AccessSSH, LogCommand
+from .models import SSHPermission ,SSH, BlackList, TimeBlackList, AccessSSH, LogCommand, GrantHistory
 from Location.models import Area, AdminSSH
 from django.template import loader
 from django.shortcuts import render, get_object_or_404, redirect
@@ -29,7 +29,7 @@ def index(request):
 
 @login_required(login_url='/login')	
 def detail(request, id):
-	if not request.user.is_superuser:
+	if True:
 		try:
 			getSSH = SSH.objects.filter(sshpermission__user__username=request.user.username,sshpermission__permission=True)
 			obj = get_object_or_404(getSSH, id=id)
@@ -174,6 +174,8 @@ def delete_User(request):
 	try:#List user is allow using connection with that id
 		s = SSH.objects.get(pk=idSSH)
 		p = SSHPermission.objects.get(user__pk=idUser)
+		l= request.user.username + " deleted "+ p.user.username + " from "+ s.ip +":"+ str(s.port)
+		GrantHistory.objects.create(log=l)
 		p.sshconnection.remove(s)
 		getObj = User.objects.filter(sshpermission__permission=True, sshpermission__sshconnection=idSSH)
 	except:
@@ -199,6 +201,8 @@ def add_User(request):
 				obj.sshconnection.add(s)
 				obj.permission = True
 				obj.save()
+				l= request.user.username +" added "+ obj.user.username+ " to "+ s.ip +":"+ str(s.port)
+				GrantHistory.objects.create(log=l)
 				return JsonResponse({'id':'User has been added'})
 
 

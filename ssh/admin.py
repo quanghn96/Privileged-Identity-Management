@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import SSH, SSHPermission, LoginInfo, BlackList, LogCommand, AccessSSH, TimeBlackList
+from .models import SSH, SSHPermission, LoginInfo, BlackList, LogCommand, AccessSSH, TimeBlackList, GrantHistory
 
 # Register your models here.
 
@@ -16,3 +16,4 @@ admin.site.register(BlackList)
 admin.site.register(LogCommand)
 admin.site.register(AccessSSH)
 admin.site.register(TimeBlackList)
+admin.site.register(GrantHistory)
